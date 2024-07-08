@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Color, PieceSymbol, Square } from 'chess.js';
-import { MOVE } from '@/app/(root)/game/page';
+import { MOVE } from '@/app/(root)/(home)/page';
 
 const ChessBoard = ({chess, board, socket, setBoard, color}: {color: string;chess: any;setBoard: any;  board: ({ square: Square; type: PieceSymbol; color: Color } | null)[][];socket: WebSocket }) => {
   const [from, setFrom] =  useState<Square | null>(null);
