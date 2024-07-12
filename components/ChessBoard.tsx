@@ -9,18 +9,17 @@ const ChessBoard = ({ chess, board, socket, setBoard, color }: { color: string; 
   const [currentBoard, setCurrentBoard] = useState(board);
 
   const handleMove = (from: Square, to: Square) => {
+    setDraggingPiece(null);
     const move: Move | null = chess.move({ from, to, promotion: 'q' });
-    console.log(move);
     if (move) {
       socket.send(JSON.stringify({ type: MOVE, payload: { move: { from, to, promotion: 'q' } } }));
       const audio = new Audio('/move.mp3');
       audio.play();
       setBoard(chess.board());
     } else {
-      setBoard(currentBoard); 
+      setBoard(currentBoard);
     }
     setFrom(null);
-    setDraggingPiece(null);
   };
 
   const createDragImage = (imgSrc: string) => {
@@ -36,6 +35,12 @@ const ChessBoard = ({ chess, board, socket, setBoard, color }: { color: string; 
     setDragImage(img);
     return img;
   };
+  const handleDragEnd = () => {
+    if (dragImage) {
+      document.body.removeChild(dragImage);
+      setDragImage(null);
+    }
+  };
 
   return (
     <div className={`text-white flex flex-col items-center justify-center w-full md:w-1/2 ${(color === 'b') ? 'rotate-180' : ''}`}>
@@ -43,7 +48,6 @@ const ChessBoard = ({ chess, board, socket, setBoard, color }: { color: string; 
         <div key={i} className="flex">
           {row.map((square, j) => {
             const squareRepresentation = String.fromCharCode(97 + (j % 8)) + "" + (8 - i) as Square;
-            const isDragging = draggingPiece === squareRepresentation;
             return (
               <div
                 onClick={() => {
@@ -72,19 +76,20 @@ const ChessBoard = ({ chess, board, socket, setBoard, color }: { color: string; 
                   if (chess.turn() === color && square) {
                     setFrom(squareRepresentation);
                     setDraggingPiece(squareRepresentation);
-                    setCurrentBoard(board); 
+                    setCurrentBoard(board);
                     const img = createDragImage(`/${square.color}${square.type}.svg`);
                     e.dataTransfer.setDragImage(img, 50, 50);
                     e.dataTransfer.effectAllowed = 'move';
                   }
                 }}
-                draggable={chess.turn() == color && !!square}
+                draggable={chess.turn() == color && square?.color == color && !!square}
+                onDragEnd={handleDragEnd}
                 key={j}
                 className={`flex items-center justify-center sm:w-24 sm:h-24 ${i % 2 === j % 2 ? 'bg-[#F0D9B5]' : 'bg-[#b88c64]'}`}
               >
                 <div className={`${(color === 'b') ? 'rotate-180' : ''}`}>
                   {square ? (
-                    <img src={`/${square.color}${square.type}.svg`} width='100' height='100' alt="piece" draggable={false} className= {`${(draggingPiece == squareRepresentation) ? 'opacity-50' : 'opacity-100'}`}/>
+                    <img src={`/${square.color}${square.type}.svg`} width='100' height='100' alt="piece" draggable={false} className={`${(draggingPiece === squareRepresentation) ? 'opacity-0' : 'opacity-100'}`}/>
                   ) : null}
                 </div>
               </div>
@@ -95,5 +100,4 @@ const ChessBoard = ({ chess, board, socket, setBoard, color }: { color: string; 
     </div>
   );
 };
-
 export default ChessBoard;
