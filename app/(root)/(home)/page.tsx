@@ -5,9 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useSocket } from '@/hooks/useSocket';
 import React, {useEffect, useState } from 'react';
 import {Chess} from 'chess.js';
-export const INIT_GAME = 'init_game';
-export const MOVE = 'move';
-export const GAME_OVER = 'game_over';
+import { GAME_OVER, INIT_GAME, MOVE } from '@/constants/messages';
 const Game = () => {
     const socket = useSocket();
     const [chess, setChess] = useState(new Chess());
