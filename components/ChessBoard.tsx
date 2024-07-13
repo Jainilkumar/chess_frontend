@@ -8,6 +8,21 @@ const ChessBoard = ({ chess, board, socket, setBoard, color }: { color: string; 
   const [draggingPiece, setDraggingPiece] = useState<Square | null>(null);
   const [currentBoard, setCurrentBoard] = useState(board);
 
+  const adjustBoardSize = () => {
+    let boardsize = '';
+    if(innerWidth < 768) {
+      boardsize = 'w-12 h-12';
+    }
+    else if(innerWidth < 1024) {
+      boardsize = 'w-20 h-20';
+    }
+    else {
+      boardsize = 'w-24 h-24';
+    }
+    return [boardsize];
+  }
+  const [boardsize] = adjustBoardSize();
+
   const handleMove = (from: Square, to: Square) => {
     setDraggingPiece(null);
     const move: Move | null = chess.move({ from, to, promotion: 'q' });
@@ -85,7 +100,7 @@ const ChessBoard = ({ chess, board, socket, setBoard, color }: { color: string; 
                 draggable={chess.turn() == color && square?.color == color && !!square}
                 onDragEnd={handleDragEnd}
                 key={j}
-                className={`flex items-center justify-center sm:w-24 sm:h-24 ${i % 2 === j % 2 ? 'bg-[#F0D9B5]' : 'bg-[#b88c64]'}`}
+                className={`flex items-center justify-center ${boardsize} ${i % 2 === j % 2 ? 'bg-[#F0D9B5]' : 'bg-[#b88c64]'}`}
               >
                 <div className={`${(color === 'b') ? 'rotate-180' : ''}`}>
                   {square ? (

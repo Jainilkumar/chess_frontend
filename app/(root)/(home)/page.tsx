@@ -52,26 +52,26 @@ const Game = () => {
 
     if (!socket) return <Loader />;
     return (
-        <div className="flex flex-col lg:flex-row justify-center items-center w-full h-screen space-y-4 lg:space-y-0 lg:space-x-4 bg-[#161513]">
-            <ChessBoard chess={chess} board={board} socket={socket} setBoard={setBoard} color={color} />
-            <div className="flex items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 justify-center items-center w-full h-screen bg-[#161513]">
+            <div className="col-span-1 lg:col-span-3 flex justify-center items-center">
+                <ChessBoard chess={chess} board={board} socket={socket} setBoard={setBoard} color={color} />
+            </div>
+            <div className="col-span-1 flex flex-col items-center space-y-4">
                 {gameStarted == 1 && (
-                <h1 className="text-white text-lg">Waiting for your opponent...</h1>
+                    <h1 className="text-white text-lg">Waiting for your opponent...</h1>
                 )}
                 <Button
-                    className="px-8 py-8 text-[30px]  bg-slate-500 hover:bg-slate-400"
+                    className="px-8 py-8 text-[30px] bg-slate-500 hover:bg-slate-400"
                     onClick={() => {
-                        if(gameStarted == 0) {
+                        if (gameStarted == 0) {
                             socket.send(JSON.stringify({ type: INIT_GAME }));
                             setGameStarted(1);
                             setButtonText('Cancel');
-                        }
-                        else if(gameStarted == 1) {
+                        } else if (gameStarted == 1) {
                             socket.send(JSON.stringify({ type: CANCEL_GAME }));
                             setGameStarted(0);
                             setButtonText('Start Game');
-                        }
-                        else if(gameStarted == 2) {
+                        } else if (gameStarted == 2) {
                             socket.send(JSON.stringify({ type: RESIGN }));
                             setGameStarted(0);
                             setButtonText('Start Game');
