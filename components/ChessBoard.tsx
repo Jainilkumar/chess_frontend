@@ -11,7 +11,7 @@ const ChessBoard = ({ chess, board, socket, setBoard, color }: { color: string; 
   const adjustBoardSize = () => {
     let boardsize = '';
     if(innerWidth < 768) {
-      boardsize = 'w-12 h-12';
+      boardsize = 'w-11 h-11';
     }
     else if(innerWidth < 1024) {
       boardsize = 'w-20 h-20';
